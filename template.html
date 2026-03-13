@@ -1,0 +1,94 @@
+<!--
+  TRMNL App Health Template
+  ─────────────────────────
+  Liquid data comes from data.json (posted to the TRMNL webhook).
+  Top section  : Vercel deployment status
+  Bottom section: Sentry error counts │ Supabase row counts (optional)
+-->
+
+<div class="layout layout--col">
+
+  <!-- ── Vercel ─────────────────────────────────────── -->
+  <div class="columns" style="flex:1; border-bottom:2px solid #000; padding-bottom:8px;">
+    <div class="column item item--center">
+
+      <span class="label">VERCEL{% if vercel.branch %} · {{ vercel.branch }}{% endif %}</span>
+
+      {% if vercel.error %}
+        <span class="value value--xlarge">—</span>
+        <span class="label">could not reach API</span>
+
+      {% elsif vercel.status == "READY" %}
+        <span class="value value--xlarge">&#10003; LIVE</span>
+
+      {% elsif vercel.status == "ERROR" %}
+        <span class="value value--xlarge">&#10005; FAILED</span>
+
+      {% elsif vercel.status == "BUILDING" %}
+        <span class="value value--xlarge">BUILDING…</span>
+
+      {% elsif vercel.status == "INITIALIZING" or vercel.status == "QUEUED" %}
+        <span class="value value--xlarge">QUEUED</span>
+
+      {% elsif vercel.status == "CANCELED" %}
+        <span class="value value--xlarge">CANCELED</span>
+
+      {% else %}
+        <span class="value value--xlarge">{{ vercel.status | default: "UNKNOWN" }}</span>
+      {% endif %}
+
+      {% if vercel.commit_message %}
+        <span class="label clamp">{{ vercel.commit_message | truncate: 64 }}</span>
+      {% endif %}
+
+      {% if vercel.deployed_at %}
+        <span class="label">{{ vercel.deployed_at | date: "%b %-d, %H:%M UTC" }}</span>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <!-- ── Sentry + Supabase ──────────────────────────── -->
+  <div class="columns" style="flex:1; padding-top:8px;">
+
+    <!-- Sentry column — always shown -->
+    <div class="column item item--center">
+      <span class="label">SENTRY ERRORS</span>
+
+      {% if sentry.error %}
+        <span class="value value--xlarge">—</span>
+        <span class="label">could not reach API</span>
+
+      {% else %}
+        <span class="value value--xlarge">
+          {{- sentry.unresolved_count -}}
+          {%- if sentry.unresolved_count_capped %}+{% endif %}
+        </span>
+        <span class="label">unresolved</span>
+
+        <span class="value value--large" style="margin-top:6px;">{{ sentry.new_24h_count }}</span>
+        <span class="label">new in last 24 h</span>
+      {% endif %}
+    </div>
+
+    <!-- Supabase column — only shown when SUPABASE_ENABLED=true -->
+    {% if supabase and supabase.tables %}
+    <div class="column item item--center" style="border-left:1px solid #000;">
+      <span class="label">SUPABASE</span>
+
+      {% for table in supabase.tables %}
+        <span class="value value--large">{{ table.count | default: "—" }}</span>
+        <span class="label">{{ table.name }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+
+  <!-- ── Title bar ──────────────────────────────────── -->
+  <div class="title_bar">
+    <span class="title_bar__title">App Health</span>
+    <span class="title_bar__subtitle">{{ fetched_at | date: "%b %-d, %H:%M" }}</span>
+  </div>
+
+</div>

@@ -1,0 +1,15 @@
+{
+  "name": "trmnl-app-health",
+  "version": "1.0.0",
+  "description": "TRMNL e-ink plugin — app health dashboard for a Svelte web app",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "fetch": "node fetch.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

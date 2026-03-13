@@ -1,0 +1,21 @@
+{
+  "fetched_at": "2026-03-13T09:00:00.000Z",
+  "vercel": {
+    "status": "READY",
+    "url": "https://my-svelte-app.vercel.app",
+    "deployed_at": "2026-03-13T08:45:00.000Z",
+    "branch": "main",
+    "commit_message": "chore: update dependencies"
+  },
+  "sentry": {
+    "unresolved_count": 3,
+    "unresolved_count_capped": false,
+    "new_24h_count": 1
+  },
+  "supabase": {
+    "tables": [
+      { "name": "users", "count": 1482 },
+      { "name": "profiles", "count": 1479 }
+    ]
+  }
+}
