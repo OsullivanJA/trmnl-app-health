@@ -77,8 +77,10 @@
       <span class="label">SUPABASE</span>
 
       {% for table in supabase.tables %}
-        <span class="value value--large">{{ table.count | default: "—" }}</span>
-        <span class="label">{{ table.name }}</span>
+        <div style="display:flex; align-items:baseline; justify-content:center; gap:6px;">
+          <span class="value value--large">{{ table.count | default: "—" }}</span>
+          <span class="label">{{ table.name }}</span>
+        </div>
       {% endfor %}
     </div>
     {% endif %}
