@@ -226,7 +226,8 @@ async function main() {
     if (webhookRes.ok) {
       console.log('✓ TRMNL webhook updated');
     } else {
-      console.error(`[TRMNL] Webhook responded with HTTP ${webhookRes.status}`);
+      const body = await webhookRes.text().catch(() => '');
+      console.error(`[TRMNL] Webhook responded with HTTP ${webhookRes.status}: ${body}`);
       process.exit(1);
     }
   } else {
