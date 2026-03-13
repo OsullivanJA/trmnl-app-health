@@ -1,0 +1,45 @@
+name: Refresh TRMNL App Health
+
+on:
+  schedule:
+    # Every 2 hours — adjust as needed (uses UTC)
+    - cron: '0 */2 * * *'
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    name: Fetch & push to TRMNL
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch data and push to TRMNL webhook
+        run: npm run fetch
+        env:
+          # ── Vercel
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+          # ── Sentry
+          SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          # ── Supabase (leave unset or set SUPABASE_ENABLED=false to disable)
+          SUPABASE_ENABLED: ${{ secrets.SUPABASE_ENABLED }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_TABLES: ${{ secrets.SUPABASE_TABLES }}
+          # ── TRMNL
+          TRMNL_WEBHOOK_URL: ${{ secrets.TRMNL_WEBHOOK_URL }}
