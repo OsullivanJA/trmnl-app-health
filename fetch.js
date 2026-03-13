@@ -112,8 +112,10 @@ async function fetchSentry() {
   const headers = { Authorization: `Bearer ${SENTRY_TOKEN}` };
   const base = `https://sentry.io/api/0/projects/${encodeURIComponent(SENTRY_ORG)}/${encodeURIComponent(SENTRY_PROJECT)}/issues/`;
 
+  const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
   const unresolvedParams = new URLSearchParams({ query: 'is:unresolved', limit: '100' });
-  const newParams = new URLSearchParams({ query: 'is:unresolved firstSeen:>-24h', limit: '100' });
+  const newParams = new URLSearchParams({ query: `is:unresolved firstSeen:>${since24h}`, limit: '100' });
 
   const [unresolvedRes, newRes] = await Promise.all([
     apiFetch(`${base}?${unresolvedParams}`, { headers }),
@@ -219,7 +221,7 @@ async function main() {
     const webhookRes = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ merge_variables: data }),
     });
     if (webhookRes.ok) {
       console.log('✓ TRMNL webhook updated');
